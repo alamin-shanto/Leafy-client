@@ -3,6 +3,7 @@
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) used to setup the project.
 - [tailwindcss](https://tailwindcss.com/) used for designing.
 - [React Router](https://reactrouter.com/) is used for routing.
+- [Firebase](https://firebase.google.com) is used for routing.
 
 ## Key Features of this app
 
