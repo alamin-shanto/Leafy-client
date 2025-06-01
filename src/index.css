@@ -1,2 +1,26 @@
 @import "tailwindcss";
-@tailwind utilities;
+@plugin "daisyui";
+
+:root {
+  --primary: #228b22;
+  --secondary: #a3d9a5;
+  --accent: #ffb74d;
+  --neutral: #3e4e3f;
+  --base-100: #f0f8f4;
+  --info: #81d4fa;
+  --success: #66bb6a;
+  --warning: #ffd54f;
+  --error: #ef5350;
+}
+
+[data-theme="dark"] {
+  --primary: #76b947;
+  --secondary: #2e7d32;
+  --accent: #ff9800;
+  --neutral: #c8e6c9;
+  --base-100: #1b2b1b;
+  --info: #4fc3f7;
+  --success: #388e3c;
+  --warning: #fbc02d;
+  --error: #e57373;
+}
