@@ -1,26 +1,81 @@
 @import "tailwindcss";
 @plugin "daisyui";
+@import "swiper/css";
+@import "swiper/css/pagination";
 
 :root {
-  --primary: #228b22;
-  --secondary: #a3d9a5;
-  --accent: #ffb74d;
-  --neutral: #3e4e3f;
-  --base-100: #f0f8f4;
-  --info: #81d4fa;
-  --success: #66bb6a;
-  --warning: #ffd54f;
-  --error: #ef5350;
+  --primary: #2f8f2f;
+  --secondary: #a8d5ba;
+  --accent: #fbc96d;
+  --neutral: #2d3f2d;
+  --base-100: #f9fefb;
+  --info: #70c7e4;
+  --success: #4caf50;
+  --warning: #ffca28;
+  --error: #f44336;
+  --text: #263326;
+  --card-bg: #ffffff;
+  --border-color: #cfe8cf;
 }
 
 [data-theme="dark"] {
-  --primary: #76b947;
-  --secondary: #2e7d32;
-  --accent: #ff9800;
-  --neutral: #c8e6c9;
-  --base-100: #1b2b1b;
+  --primary: #76c16d;
+  --secondary: #3b9f6b;
+  --accent: #ffab40;
+  --neutral: #c7eecb;
+  --base-100: #172517;
   --info: #4fc3f7;
-  --success: #388e3c;
-  --warning: #fbc02d;
+  --success: #66bb6a;
+  --warning: #ffb300;
   --error: #e57373;
+  --text: #eafce7;
+  --card-bg: #1e331e;
+  --border-color: #3e6041;
+}
+
+body {
+  background-color: var(--base-100);
+  color: var(--text);
+  transition: background-color 0.3s, color 0.3s;
+  font-family: "Inter", sans-serif;
+}
+
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  background-color: var(--primary);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn:hover {
+  background-color: var(--secondary);
+  color: var(--base-100);
+  transform: scale(1.05);
+}
+
+.toggle {
+  background-color: var(--accent);
+  color: var(--base-100);
+  padding: 0.4rem 0.8rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }

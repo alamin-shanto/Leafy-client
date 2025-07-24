@@ -9,8 +9,9 @@ import {
   updateProfile,
 } from "firebase/auth";
 import React, { useEffect, useState } from "react";
-import { auth } from "../Firebase/firebase";
+
 import AuthContext from "./AuthContext";
+import { auth } from "../Firebase/Firebase";
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

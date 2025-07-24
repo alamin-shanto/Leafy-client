@@ -21,3 +21,10 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 export { auth, db };
+
+export const getJwtToken = async () => {
+  if (auth.currentUser) {
+    return await auth.currentUser.getIdToken();
+  }
+  throw new Error("User is not authenticated");
+};

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../Firebase/firebase";
 import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
@@ -8,6 +7,7 @@ import {
 } from "firebase/auth";
 import toast from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react";
+import { auth } from "../Firebase/Firebase";
 
 const LogIn = () => {
   const [email, setEmail] = useState("");
@@ -25,8 +25,8 @@ const LogIn = () => {
       toast.success("Logged in Successfully");
       navigate("/");
     } catch (err) {
-      toast.error("Invalid email or Password");
-      setError("Invalid email or Password");
+      toast.error("Invalid email or password");
+      setError("Invalid email or password");
       console.error("login error", err);
     }
   };
@@ -39,82 +39,100 @@ const LogIn = () => {
       toast.success("Logged in Successfully");
       navigate("/");
     } catch (err) {
-      toast.error("Google Sign In Failed");
-      setError("Google Sign In Failed");
+      toast.error("Google Sign-In Failed");
+      setError("Google Sign-In Failed");
       console.error("login error", err);
     }
   };
 
   return (
-    <div className="flex justify-center items-center m-5 lg:my-20">
+    <div className="min-h-screen flex justify-center items-center bg-[var(--base-100)] text-[var(--text)] px-4 py-10">
       <form
         onSubmit={handleSubmit}
-        className="bg-[var(--secondary)] p-5 rounded-2xl shadow-md w-full max-w-sm"
+        className="w-full max-w-md p-8 rounded-3xl shadow-xl bg-[var(--secondary)] text-[var(--text)]"
       >
-        <h2 className="text-center font-extrabold text-2xl my-5">Login Page</h2>
-        {error && <p className="text-red-500 mb-5 text-center">{error}</p>}
+        <h2 className="text-center text-3xl font-bold mb-6 text-blue-600">
+          Welcome Back 👋
+        </h2>
+
+        {error && (
+          <p className="bg-red-100 text-red-700 px-4 py-2 rounded-lg text-sm text-center mb-4">
+            {error}
+          </p>
+        )}
+
+        {/* Email */}
+        <label className="block mb-2 text-sm font-semibold">Email</label>
         <input
           type="email"
-          placeholder="Email"
-          className="bg-white w-full mb-5 p-3 rounded-2xl text-black"
+          placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          className="w-full mb-4 p-3 rounded-lg bg-white text-black placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <div className="relative mb-5">
+        {/* Password */}
+        <label className="block mb-2 text-sm font-semibold">Password</label>
+        <div className="relative mb-4">
           <input
             type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            className="bg-white w-full p-3 rounded-2xl text-black"
+            placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className="w-full p-3 rounded-lg bg-white text-black placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black"
-            aria-level="Toggle password visibility"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+            aria-label="Toggle password visibility"
           >
             {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
           </button>
         </div>
 
-        <div className="flex justify-between mb-5">
-          <p></p>
+        {/* Forgot Password */}
+        <div className="text-right mb-5">
           <Link
             to="/forgot-password"
             state={{ email }}
-            className="hover:text-blue-400"
+            className="text-sm text-blue-500 hover:underline"
           >
             Forgot Password?
           </Link>
         </div>
 
+        {/* Login Button */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-4 rounded-2xl hover:bg-blue-700 font-bold"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition"
         >
           Sign In
         </button>
 
+        {/* Divider */}
+        <div className="my-4 text-center text-sm opacity-70">or</div>
+
+        {/* Google Login */}
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="w-full hover:text-blue-700 font-bold mt-5"
+          className="w-full border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold py-3 rounded-lg transition"
         >
-          Sign In With Google
+          Sign in with Google
         </button>
 
-        <p className="text-center mt-2">
-          Don't have an Account?{" "}
+        {/* Sign Up Link */}
+        <p className="text-center mt-6 text-sm">
+          Don’t have an account?{" "}
           <Link
             to="/register"
-            className="text-blue-500 hover:text-blue-700 font-bold"
+            className="text-blue-600 hover:underline font-semibold"
           >
             Sign up here
-          </Link>{" "}
+          </Link>
         </p>
       </form>
     </div>

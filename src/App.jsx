@@ -6,7 +6,6 @@ function App() {
   return (
     <>
       <Toaster position="top-right" />
-
       <Router />
     </>
   );
