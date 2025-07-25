@@ -1,21 +1,52 @@
 import React from "react";
+import Swal from "sweetalert2";
 
 const AddPlants = () => {
   const handleAddPlants = (e) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
-    const newPlant = Object.fromEntries(formData.entries());
+
+    const newPlant = {
+      Plant_Name: formData.get("Plant_Name"),
+      Description: formData.get("Description"),
+      Category: formData.get("Category"),
+      Care_Level: formData.get("Care_Level"),
+      Watering_Frequency: Number(formData.get("Watering_Frequency")),
+      Health: Number(formData.get("Health")),
+      Image: formData.get("Image"),
+      Last_Watering_Date: formData.get("Last_Watering_Date"),
+      Next_Watering_Date: formData.get("Next_Watering_Date"),
+      UserName: formData.get("UserName"),
+      Email: formData.get("Email"),
+    };
 
     fetch("http://localhost:3000/plants", {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newPlant),
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Plant added:", data);
-        form.reset();
+        if (data.insertedId || data.acknowledged) {
+          Swal.fire({
+            title: "✅ Plant Added!",
+            text: "Your plant was successfully added to the database.",
+            icon: "success",
+            confirmButtonText: "Cool",
+          });
+          form.reset();
+        } else {
+          throw new Error("Insert failed");
+        }
+      })
+      .catch((err) => {
+        console.error("Add plant error:", err);
+        Swal.fire({
+          title: "❌ Error",
+          text: "Failed to add the plant. Please try again.",
+          icon: "error",
+        });
       });
   };
 
@@ -26,13 +57,11 @@ const AddPlants = () => {
       </h1>
 
       <form onSubmit={handleAddPlants} className="space-y-12">
-        {/* 🌱 Basic Info */}
-        <div>
-          <h2 className="section-title">📝 Basic Information</h2>
+        <Section title="📝 Basic Information">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Input
               label="Plant Name"
-              name="Plant Name"
+              name="Plant_Name"
               placeholder="e.g., Snake Plant"
             />
             <Input
@@ -40,7 +69,6 @@ const AddPlants = () => {
               name="Description"
               placeholder="Indoor air-purifying plant"
             />
-
             <Select
               label="Category"
               name="Category"
@@ -57,30 +85,30 @@ const AddPlants = () => {
                 "carnivorous plants",
               ]}
             />
-
             <Select
               label="Care Level"
-              name="Care Level"
+              name="Care_Level"
               options={["very easy", "easy", "moderate", "difficult"]}
             />
           </div>
-        </div>
+        </Section>
 
-        {/* 💧 Care Info */}
-        <div>
-          <h2 className="section-title">💧 Care Information</h2>
+        <Section title="💧 Care Information">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Input
               label="Watering Frequency (days)"
-              name="Watering Frequency"
+              name="Watering_Frequency"
               type="number"
               placeholder="e.g., 5"
+              min="1"
             />
             <Input
               label="Health Status (%)"
               name="Health"
               type="number"
               placeholder="e.g., 90"
+              min="0"
+              max="100"
             />
             <Input
               label="Image URL"
@@ -89,28 +117,24 @@ const AddPlants = () => {
               placeholder="https://..."
             />
           </div>
-        </div>
+        </Section>
 
-        {/* 📅 Watering Dates */}
-        <div>
-          <h2 className="section-title">📅 Watering Schedule</h2>
+        <Section title="📅 Watering Schedule">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Input
               label="Last Watering Date"
-              name="Last Watering Date"
+              name="Last_Watering_Date"
               type="date"
             />
             <Input
               label="Next Watering Date"
-              name="Next Watering Date"
+              name="Next_Watering_Date"
               type="date"
             />
           </div>
-        </div>
+        </Section>
 
-        {/* 👤 User Info */}
-        <div>
-          <h2 className="section-title">👤 User Information</h2>
+        <Section title="👤 User Information">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Input
               label="User Name"
@@ -124,7 +148,7 @@ const AddPlants = () => {
               placeholder="you@email.com"
             />
           </div>
-        </div>
+        </Section>
 
         <button
           type="submit"
@@ -137,12 +161,11 @@ const AddPlants = () => {
   );
 };
 
-// 🌟 Reusable Input Field Component
-const Input = ({ label, name, type = "text", placeholder }) => (
+const Input = ({ label, name, type = "text", placeholder, min, max }) => (
   <div>
     <label
       htmlFor={name}
-      className="block mb-2 text-[var(--neutral)] font-semibold tracking-wide"
+      className="block mb-2 text-[var(--neutral)] font-semibold"
     >
       {label}
     </label>
@@ -152,17 +175,18 @@ const Input = ({ label, name, type = "text", placeholder }) => (
       name={name}
       placeholder={placeholder}
       required
+      min={min}
+      max={max}
       className="w-full bg-white dark:bg-[var(--card-bg)] text-[var(--text)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-4 focus:ring-[var(--primary)] transition"
     />
   </div>
 );
 
-// 🌟 Reusable Select Dropdown
 const Select = ({ label, name, options }) => (
   <div>
     <label
       htmlFor={name}
-      className="block mb-2 text-[var(--neutral)] font-semibold tracking-wide"
+      className="block mb-2 text-[var(--neutral)] font-semibold"
     >
       {label}
     </label>
@@ -185,13 +209,13 @@ const Select = ({ label, name, options }) => (
   </div>
 );
 
-// 🌟 Tailwind Utility
-const style = document.createElement("style");
-style.innerHTML = `
-  .section-title {
-    @apply text-2xl font-bold text-[var(--primary)] mb-6 border-b pb-2 border-[var(--border-color)];
-  }
-`;
-document.head.appendChild(style);
+const Section = ({ title, children }) => (
+  <div>
+    <h2 className="text-2xl font-bold text-[var(--primary)] mb-6 border-b pb-2 border-[var(--border-color)]">
+      {title}
+    </h2>
+    {children}
+  </div>
+);
 
 export default AddPlants;

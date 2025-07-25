@@ -47,12 +47,12 @@ const NewPlants = () => {
           >
             <img
               src={plant.Image}
-              alt={plant["Plant Name"]}
+              alt={plant.Plant_Name}
               className="w-full h-48 object-cover"
             />
             <div className="p-5 space-y-2">
               <h3 className="text-xl font-bold text-[var(--accent)]">
-                {plant["Plant Name"]}
+                {plant.Plant_Name}
               </h3>
               <p className="text-sm text-[var(--neutral)] opacity-80">
                 {plant.Description?.length > 90
@@ -65,12 +65,11 @@ const NewPlants = () => {
                   {plant.Category}
                 </p>
                 <p>
-                  <span className="font-medium">Care:</span>{" "}
-                  {plant["Care Level"]}
+                  <span className="font-medium">Care:</span> {plant.Care_Level}
                 </p>
                 <p>
                   <span className="font-medium">Watering:</span> Every{" "}
-                  {plant["Watering Frequency"]} day(s)
+                  {plant.Watering_Frequency} day(s)
                 </p>
                 <p>
                   <span className="font-medium">Health:</span> {plant.Health}%

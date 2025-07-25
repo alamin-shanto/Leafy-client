@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const AllPlants = () => {
   const [plants, setPlants] = useState([]);
@@ -42,10 +43,10 @@ const AllPlants = () => {
       <div className="flex flex-wrap gap-3 justify-center mb-8">
         <button
           className="btn"
-          onClick={() => handleSortChange("Watering Frequency")}
+          onClick={() => handleSortChange("Watering_Frequency")}
         >
           Sort by Watering Frequency{" "}
-          {sortField === "Watering Frequency" ? `(${sortOrder})` : ""}
+          {sortField === "Watering_Frequency" ? `(${sortOrder})` : ""}
         </button>
         <button className="btn" onClick={() => handleSortChange("Health")}>
           Sort by Health {sortField === "Health" ? `(${sortOrder})` : ""}
@@ -58,19 +59,23 @@ const AllPlants = () => {
           <div key={plant._id} className="card">
             <img
               src={plant.Image}
-              alt={plant["Plant Name"]}
+              alt={plant["Plant_Name"]}
               className="w-full h-48 object-cover rounded-lg mb-4"
             />
-            <h3 className="text-xl font-semibold mb-2">
-              {plant["Plant Name"]}
-            </h3>
+            <h3 className="text-xl font-semibold mb-2">{plant.Plant_Name}</h3>
+
             <p className="text-sm mb-1">🌱 Category: {plant.Category}</p>
             <p className="text-sm mb-1">
-              💧 Watering Frequency: {plant["Watering Frequency"]} days
+              💧 Watering Frequency: {plant.Watering_Frequency} days
             </p>
             <p className="text-sm mb-1">❤️ Health: {plant.Health}%</p>
-            <p className="text-sm mb-2">🧪 Care Level: {plant["Care Level"]}</p>
-            <button className="btn mt-2 w-full">View Details</button>
+            <p className="text-sm mb-2">🧪 Care Level: {plant.Care_Level}</p>
+            <Link
+              to={`/plants/${plant._id}`}
+              className="btn mt-2 w-full text-center"
+            >
+              View Details
+            </Link>
           </div>
         ))}
       </div>

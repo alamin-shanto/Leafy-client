@@ -9,6 +9,7 @@ import AllPlants from "../Pages/AllPlants";
 import AddPlants from "../Pages/AddPlants";
 import Layout from "../Components/Layout";
 import PrivateRoutes from "./PrivateRoutes";
+import PlantDetails from "../Pages/PlantDetails";
 
 const Router = () => {
   return (
@@ -43,6 +44,7 @@ const Router = () => {
                 </PrivateRoutes>
               }
             ></Route>
+            <Route path="/plants/:id" element={<PlantDetails />} />
           </Route>
           <Route path="*" element={<NotFound />}></Route>
         </Routes>
