@@ -5,8 +5,10 @@ import Swal from "sweetalert2";
 
 const normalizeDate = (date) => {
   if (!date) return "";
-  if (typeof date === "string") return date.slice(0, 10);
-  return new Date(date).toISOString().slice(0, 10);
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  const localDate = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return localDate.toISOString().slice(0, 10);
 };
 
 const MyPlants = () => {
@@ -28,29 +30,33 @@ const MyPlants = () => {
         today.setHours(0, 0, 0, 0);
 
         filtered.forEach((plant) => {
-          const nextWatering = new Date(plant.Next_Watering_Date);
+          let lastWatered = new Date(plant.Last_Watering_Date);
+          let nextWatering = new Date(plant.Next_Watering_Date);
+          const freq = Number(plant.Watering_Frequency);
+
+          lastWatered.setHours(0, 0, 0, 0);
           nextWatering.setHours(0, 0, 0, 0);
 
-          if (nextWatering.getTime() === today.getTime()) {
+          let updated = false;
+          while (nextWatering <= today) {
+            lastWatered = new Date(nextWatering);
+            nextWatering.setDate(nextWatering.getDate() + freq);
+            updated = true;
+          }
+
+          if (updated) {
             const updatedPlant = {
               ...plant,
-              Last_Watering_Date: normalizeDate(today),
-              Next_Watering_Date: normalizeDate(
-                new Date(
-                  today.getTime() +
-                    plant.Watering_Frequency * 24 * 60 * 60 * 1000
-                )
-              ),
+              Last_Watering_Date: normalizeDate(lastWatered),
+              Next_Watering_Date: normalizeDate(nextWatering),
             };
 
-            // Update backend
             fetch(`http://localhost:3000/plants/${plant._id}`, {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(updatedPlant),
             }).catch((err) => console.error("Auto update failed:", err));
 
-            // Update local copy
             Object.assign(plant, updatedPlant);
           }
         });
@@ -214,13 +220,13 @@ const PlantCard = ({ plant, onEdit, onDelete }) => (
       <li>
         <strong>Last Watered:</strong>{" "}
         {plant.Last_Watering_Date
-          ? plant.Last_Watering_Date.slice(0, 10)
+          ? normalizeDate(plant.Last_Watering_Date)
           : "N/A"}
       </li>
       <li>
         <strong>Next Watering:</strong>{" "}
         {plant.Next_Watering_Date
-          ? plant.Next_Watering_Date.slice(0, 10)
+          ? normalizeDate(plant.Next_Watering_Date)
           : "N/A"}
       </li>
     </ul>
