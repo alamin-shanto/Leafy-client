@@ -5,7 +5,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 import { Eye, EyeOff } from "lucide-react";
 import { auth } from "../Firebase/Firebase";
 
@@ -16,16 +16,27 @@ const LogIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  const showAlert = (type, message) => {
+    Swal.fire({
+      icon: type,
+      title: message,
+      showConfirmButton: false,
+      timer: 1800,
+      toast: true,
+      position: "top-end",
+    });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      toast.success("Logged in Successfully");
+      showAlert("success", "Logged in Successfully");
       navigate("/");
     } catch (err) {
-      toast.error("Invalid email or password");
+      showAlert("error", "Invalid email or password");
       setError("Invalid email or password");
       console.error("login error", err);
     }
@@ -36,10 +47,10 @@ const LogIn = () => {
 
     try {
       await signInWithPopup(auth, provider);
-      toast.success("Logged in Successfully");
+      showAlert("success", "Logged in Successfully");
       navigate("/");
     } catch (err) {
-      toast.error("Google Sign-In Failed");
+      showAlert("error", "Google Sign-In Failed");
       setError("Google Sign-In Failed");
       console.error("login error", err);
     }

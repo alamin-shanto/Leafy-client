@@ -4,7 +4,7 @@ Leafy is a modern and user-friendly web application built for plant lovers to ma
 
 ## 🔗 Live Link
 
-[🌱 View Live App](https://your-deployed-link.com) <!-- Replace with your actual link -->
+[🌱 View Live App](https://your-deployed-link.com)
 
 ---
 
@@ -34,5 +34,3 @@ This app is developed using modern frontend technologies and tools:
 - 🚪 Logout, profile management, and protected routes
 
 ---
-
-## 🧪 Live Link
