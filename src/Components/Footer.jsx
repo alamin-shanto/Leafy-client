@@ -1,5 +1,6 @@
 import React from "react";
 import { Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
+import { Link as ScrollLink } from "react-scroll"; // ✅ import this
 
 const Footer = () => {
   return (
@@ -50,33 +51,48 @@ const Footer = () => {
           </h3>
           <ul className="space-y-2 text-sm text-gray-300">
             <li>
-              <a
-                href="#recent-plants"
-                className="hover:text-green-400 transition"
+              <ScrollLink
+                to="recent-plants"
+                smooth={true}
+                duration={600}
+                offset={-70}
+                className="hover:text-green-400 transition cursor-pointer"
               >
                 Recent Plants
-              </a>
+              </ScrollLink>
             </li>
             <li>
-              <a
-                href="#beginner-plants"
-                className="hover:text-green-400 transition"
+              <ScrollLink
+                to="beginner-plants"
+                smooth={true}
+                duration={600}
+                offset={-70}
+                className="hover:text-green-400 transition cursor-pointer"
               >
                 Beginner Friendly Plants
-              </a>
+              </ScrollLink>
             </li>
             <li>
-              <a
-                href="#top-mistakes"
-                className="hover:text-green-400 transition"
+              <ScrollLink
+                to="top-mistakes"
+                smooth={true}
+                duration={600}
+                offset={-70}
+                className="hover:text-green-400 transition cursor-pointer"
               >
                 Top Mistakes
-              </a>
+              </ScrollLink>
             </li>
             <li>
-              <a href="#leafy" className="hover:text-green-400 transition">
+              <ScrollLink
+                to="leafy"
+                smooth={true}
+                duration={600}
+                offset={-70}
+                className="hover:text-green-400 transition cursor-pointer"
+              >
                 Leafy
-              </a>
+              </ScrollLink>
             </li>
           </ul>
         </div>
