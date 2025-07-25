@@ -10,10 +10,18 @@ const Home = () => {
   return (
     <div className="">
       <Banner />
-      <NewPlants />
-      <BeginnerFriendlyPlants />
-      <TopPlantCareMistakes />
-      <WhyChooseLeafy />
+      <section id="recent-plants">
+        <NewPlants />
+      </section>
+      <section id="beginner-plants">
+        <BeginnerFriendlyPlants />
+      </section>
+      <section id="top-mistakes">
+        <TopPlantCareMistakes />
+      </section>
+      <section id="leafy">
+        <WhyChooseLeafy />
+      </section>
     </div>
   );
 };
