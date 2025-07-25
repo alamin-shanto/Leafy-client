@@ -1,46 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const NewPlants = () => {
-  const [plants, setPlants] = useState([]);
+const BeginnerFriendlyPlants = () => {
+  const [easyPlants, setEasyPlants] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     fetch("http://localhost:3000/plants")
       .then((res) => res.json())
       .then((data) => {
-        const latestSix = data.reverse().slice(0, 6);
-        setPlants(latestSix);
+        const veryEasy = data.filter(
+          (plant) => plant.Care_Level?.toLowerCase() === "very easy"
+        );
+        setEasyPlants(veryEasy.slice(0, 3));
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Failed to load plants:", err);
-        setError("Failed to load plants");
+        console.error("Failed to fetch beginner-friendly plants:", err);
         setLoading(false);
       });
   }, []);
 
-  if (loading) {
+  if (loading) return <p className="text-center">Loading beginner plants...</p>;
+  if (!easyPlants.length)
     return (
-      <p className="text-center my-10 text-lg font-semibold">
-        Loading plants...
-      </p>
+      <p className="text-center text-gray-500">No beginner plants found.</p>
     );
-  }
-
-  if (error) {
-    return <p className="text-center my-10 text-red-500">{error}</p>;
-  }
 
   return (
     <section className="my-12 px-4 lg:px-10">
-      <h2 className="text-3xl font-bold text-center mb-10 text-[var(--neutral)]">
-        🌱 Recently Added Plants
+      <h2 className="text-3xl font-bold text-center mb-8 text-[var(--neutral)]">
+        🪴 Beginner-Friendly Plants
       </h2>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {plants.map((plant) => (
+        {easyPlants.map((plant) => (
           <div
             key={plant._id}
             className="bg-[var(--base-100)] border border-[var(--secondary)] rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden"
@@ -61,21 +54,13 @@ const NewPlants = () => {
               </p>
               <div className="text-sm text-[var(--neutral)] space-y-1">
                 <p>
-                  <span className="font-medium">Category:</span>{" "}
-                  {plant.Category}
-                </p>
-                <p>
                   <span className="font-medium">Care:</span> {plant.Care_Level}
                 </p>
                 <p>
                   <span className="font-medium">Watering:</span> Every{" "}
                   {plant.Watering_Frequency} day(s)
                 </p>
-                <p>
-                  <span className="font-medium">Health:</span> {plant.Health}%
-                </p>
               </div>
-
               <Link
                 to={`/plants/${plant._id}`}
                 className="inline-block mt-4 text-center bg-[var(--info)] text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition font-semibold"
@@ -86,18 +71,8 @@ const NewPlants = () => {
           </div>
         ))}
       </div>
-
-      {/* ✅ Show More button */}
-      <div className="flex justify-center mt-10">
-        <Link
-          to="/allplants"
-          className="inline-block bg-[var(--primary)] text-white px-6 py-3 rounded-full hover:bg-[var(--accent)] transition font-bold text-lg shadow-md"
-        >
-          Show More →
-        </Link>
-      </div>
     </section>
   );
 };
 
-export default NewPlants;
+export default BeginnerFriendlyPlants;
