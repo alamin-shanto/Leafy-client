@@ -4,6 +4,7 @@ import Banner from "./../Components/Banner";
 import NewPlants from "../Components/NewPlants";
 import BeginnerFriendlyPlants from "../Components/BeginnerFriendlyPlants";
 import TopPlantCareMistakes from "../Components/TopPlantCareMistakes";
+import WhyChooseLeafy from "../Components/WhyChooseLeafy";
 
 const Home = () => {
   return (
@@ -12,6 +13,7 @@ const Home = () => {
       <NewPlants />
       <BeginnerFriendlyPlants />
       <TopPlantCareMistakes />
+      <WhyChooseLeafy />
     </div>
   );
 };
