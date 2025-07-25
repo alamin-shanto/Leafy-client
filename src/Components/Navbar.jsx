@@ -18,14 +18,18 @@ const Navbar = () => {
     () => localStorage.getItem("theme") || "light"
   );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [drawerKey, setDrawerKey] = useState(0); // for forcing re-render
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
+    const root = document.documentElement;
+    root.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
+    setDrawerKey((prev) => prev + 1); // force re-render of drawer
   }, [theme]);
 
-  const toggleTheme = () =>
+  const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
 
   const handleLogout = async () => {
     try {
@@ -75,11 +79,7 @@ const Navbar = () => {
             title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
             aria-label="Toggle theme"
           >
-            {theme === "light" ? (
-              <Moon size={20} className="m-0 p-0" />
-            ) : (
-              <Sun size={20} className="m-0 p-0" />
-            )}
+            {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
           </button>
 
           {/* Auth Desktop */}
@@ -147,17 +147,20 @@ const Navbar = () => {
       {isMobileMenuOpen && (
         <>
           <div
-            className="fixed inset-0 bg-black bg-opacity-60 z-40"
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
             onClick={() => setIsMobileMenuOpen(false)}
           ></div>
 
-          <aside className="fixed top-0 right-0 h-full w-72 bg-[var(--secondary)] backdrop-blur-md shadow-2xl z-50 flex flex-col rounded-l-xl transition-transform">
-            <div className="flex items-center justify-between p-4 border-b border-white/20">
-              <h2 className="text-xl font-bold text-white">Menu</h2>
+          <aside
+            key={drawerKey} // <-- here to force re-render on theme change
+            className="fixed top-0 right-0 h-full w-72 bg-[var(--base-100)] text-[var(--text)] border-l border-[var(--border-color)] shadow-lg z-50 flex flex-col rounded-l-xl transition-transform"
+          >
+            <div className="flex items-center justify-between p-4 border-b border-[var(--border-color)]">
+              <h2 className="text-xl font-bold text-[var(--primary)]">Menu</h2>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
                 aria-label="Close menu"
-                className="text-white hover:text-[var(--accent)]"
+                className="hover:text-[var(--accent)]"
               >
                 <X size={24} />
               </button>
@@ -165,21 +168,23 @@ const Navbar = () => {
 
             {/* User Info */}
             {user && (
-              <div className="flex items-center gap-3 p-4 border-b border-white/20">
+              <div className="flex items-center gap-3 p-4 border-b border-[var(--border-color)]">
                 <img
                   src={user.photoURL}
                   alt="User Avatar"
                   className="w-12 h-12 rounded-full ring ring-[var(--accent)]"
                 />
                 <div>
-                  <p className="font-semibold">{user.displayName}</p>
+                  <p className="font-semibold text-[var(--primary)]">
+                    {user.displayName}
+                  </p>
                   <p className="text-sm text-[var(--neutral)]">{user.email}</p>
                 </div>
               </div>
             )}
 
             {/* Nav Links */}
-            <nav className="flex flex-col p-4 gap-3 text-lg text-white">
+            <nav className="flex flex-col p-4 gap-3 text-lg">
               {[
                 { name: "Home", path: "/" },
                 { name: "All Plants", path: "/allplants" },
@@ -190,7 +195,13 @@ const Navbar = () => {
                   to={path}
                   key={path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={activeNavLink}
+                  className={({ isActive }) =>
+                    `block px-4 py-3 rounded-md font-semibold transition ${
+                      isActive
+                        ? "bg-[var(--accent)] text-[var(--base-100)] shadow-lg"
+                        : "text-[var(--text)] hover:bg-[var(--secondary)] hover:text-[var(--primary)]"
+                    }`
+                  }
                 >
                   {name}
                 </NavLink>
@@ -205,7 +216,7 @@ const Navbar = () => {
                     handleLogout();
                     setIsMobileMenuOpen(false);
                   }}
-                  className="w-full rounded-md bg-red-600 hover:bg-red-700 py-3 font-semibold transition"
+                  className="w-full rounded-md bg-red-600 hover:bg-red-700 py-3 font-semibold transition text-white"
                 >
                   Log Out
                 </button>
@@ -214,14 +225,14 @@ const Navbar = () => {
                   <Link
                     to="/login"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="block mb-3 rounded-md bg-[var(--accent)] py-3 text-center font-semibold hover:bg-blue-700 transition"
+                    className="block mb-3 rounded-md bg-[var(--accent)] text-white py-3 text-center font-semibold hover:bg-[var(--primary)] transition"
                   >
                     Login
                   </Link>
                   <Link
                     to="/register"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="block rounded-md bg-[var(--accent)] py-3 text-center font-semibold hover:bg-blue-700 transition"
+                    className="block rounded-md bg-[var(--accent)] text-white py-3 text-center font-semibold hover:bg-[var(--primary)] transition"
                   >
                     Signup
                   </Link>
@@ -230,18 +241,14 @@ const Navbar = () => {
             </div>
 
             {/* Theme Toggle */}
-            <div className="p-4 flex justify-center border-t border-white/20">
+            <div className="p-4 flex justify-center border-t border-[var(--border-color)]">
               <button
                 onClick={toggleTheme}
-                className="w-10 h-10 rounded-full bg-[var(--primary)] border-2 border-[var(--accent)] hover:bg-[var(--accent)] hover:text-[var(--neutral)] transition-all duration-300 flex items-center justify-center"
+                className="w-10 h-10 rounded-full bg-[var(--accent)] hover:bg-[var(--primary)] text-white transition-all duration-300 flex items-center justify-center"
                 title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
                 aria-label="Toggle theme"
               >
-                {theme === "light" ? (
-                  <Moon size={20} className="m-0 p-0" />
-                ) : (
-                  <Sun size={20} className="m-0 p-0" />
-                )}
+                {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
               </button>
             </div>
           </aside>
