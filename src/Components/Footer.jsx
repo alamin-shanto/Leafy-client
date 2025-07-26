@@ -104,7 +104,7 @@ const Footer = () => {
           </h3>
           <div className="flex gap-4">
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/mohammad.alamin.94402/"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-green-600 p-2 rounded-full hover:bg-green-500 transition"
@@ -112,7 +112,7 @@ const Footer = () => {
               <Facebook className="text-white" size={20} />
             </a>
             <a
-              href="https://twitter.com"
+              href="https://x.com/mdalamin94402"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-blue-500 p-2 rounded-full hover:bg-blue-400 transition"
@@ -120,7 +120,7 @@ const Footer = () => {
               <Twitter className="text-white" size={20} />
             </a>
             <a
-              href="https://instagram.com"
+              href="https://instagram.com/mbm94402"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-pink-500 p-2 rounded-full hover:bg-pink-400 transition"
@@ -128,7 +128,7 @@ const Footer = () => {
               <Instagram className="text-white" size={20} />
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://linkedin.com/in/mohammad-al-amin-433042306"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-blue-700 p-2 rounded-full hover:bg-blue-600 transition"
@@ -136,7 +136,7 @@ const Footer = () => {
               <Linkedin className="text-white" size={20} />
             </a>
             <a
-              href="https://youtube.com"
+              href="https://www.youtube.com/channel/UCTul_M6CMliITA0E1dvQhzg"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-red-600 p-2 rounded-full hover:bg-red-500 transition"

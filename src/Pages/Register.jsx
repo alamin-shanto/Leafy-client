@@ -6,9 +6,8 @@ import {
 } from "firebase/auth";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 import { auth, db } from "../Firebase/Firebase";
 
 const Register = () => {
@@ -19,6 +18,17 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const showAlert = (type, message) => {
+    Swal.fire({
+      icon: type,
+      title: message,
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+  };
 
   const handleSignup = async (event) => {
     event.preventDefault();
@@ -43,10 +53,10 @@ const Register = () => {
         createdAt: serverTimestamp(),
       });
 
-      toast.success("Account created successfully!");
+      showAlert("success", "Account created successfully!");
       navigate("/");
     } catch (error) {
-      toast.error("Sign up failed, try again.");
+      showAlert("error", "Sign up failed, try again.");
       console.error("Signup error", error);
       setError("Sign up failed. Please try again.");
     }
@@ -66,10 +76,10 @@ const Register = () => {
         createdAt: serverTimestamp(),
       });
 
-      toast.success("Signed up with Google!");
+      showAlert("success", "Signed up with Google!");
       navigate("/");
     } catch (error) {
-      toast.error("Google sign up failed.");
+      showAlert("error", "Google sign up failed.");
       console.error("Google sign up error", error);
       setError("Google Sign Up Failed. Try Again");
     }
