@@ -9,14 +9,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import Swal from "sweetalert2";
 import { auth, db } from "../Firebase/Firebase";
+import { Eye, EyeOff } from "lucide-react";
 
 const Register = () => {
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [photoURL, setPhotoURL] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const showAlert = (type, message) => {
@@ -30,9 +32,22 @@ const Register = () => {
     });
   };
 
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+    return regex.test(password);
+  };
+
   const handleSignup = async (event) => {
     event.preventDefault();
     setError("");
+
+    if (!validatePassword(password)) {
+      showAlert(
+        "error",
+        "Password must contain uppercase, lowercase, and be at least 6 characters."
+      );
+      return;
+    }
 
     try {
       const userCredentials = await createUserWithEmailAndPassword(
@@ -41,15 +56,15 @@ const Register = () => {
         password
       );
       await updateProfile(userCredentials.user, {
-        displayName: `${firstname} ${lastname}`,
-        photoURL: photoURL,
+        displayName: `${firstName} ${lastName}`,
+        photoURL,
       });
 
       await setDoc(doc(db, "users", userCredentials.user.uid), {
         uid: userCredentials.user.uid,
-        displayName: `${firstname} ${lastname}`,
-        photoURL: photoURL,
-        email: email,
+        displayName: `${firstName} ${lastName}`,
+        photoURL,
+        email,
         createdAt: serverTimestamp(),
       });
 
@@ -106,8 +121,8 @@ const Register = () => {
         <input
           type="text"
           placeholder="John"
-          value={firstname}
-          onChange={(e) => setFirstname(e.target.value)}
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
           required
           className="w-full mb-4 p-3 rounded-lg bg-white text-black placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
@@ -117,8 +132,8 @@ const Register = () => {
         <input
           type="text"
           placeholder="Doe"
-          value={lastname}
-          onChange={(e) => setLastname(e.target.value)}
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
           required
           className="w-full mb-4 p-3 rounded-lg bg-white text-black placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
@@ -147,14 +162,23 @@ const Register = () => {
 
         {/* Password */}
         <label className="block mb-2 text-sm font-medium">Password</label>
-        <input
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="w-full mb-6 p-3 rounded-lg bg-white text-black placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <div className="relative mb-6">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full p-3 rounded-lg bg-white text-black placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+          >
+            {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+          </button>
+        </div>
 
         {/* Signup Button */}
         <button

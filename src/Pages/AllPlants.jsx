@@ -1,5 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Eye } from "lucide-react"; // For an eye icon on View Details button
+
+const categoryColors = {
+  "flowering plants": "bg-pink-200 text-pink-800",
+  ferns: "bg-green-200 text-green-800",
+  succulents: "bg-yellow-200 text-yellow-800",
+  trees: "bg-teal-200 text-teal-800",
+  shrubs: "bg-purple-200 text-purple-800",
+  herbs: "bg-indigo-200 text-indigo-800",
+  "aquatic plants": "bg-blue-200 text-blue-800",
+  vines: "bg-amber-200 text-amber-800",
+  "indoor foliage": "bg-lime-200 text-lime-800",
+  "carnivorous plants": "bg-red-200 text-red-800",
+};
+
+const wateringFrequencyColors = (days) => {
+  if (days <= 3) return "bg-red-200 text-red-800";
+  if (days <= 7) return "bg-yellow-200 text-yellow-800";
+  return "bg-green-200 text-green-800";
+};
 
 const AllPlants = () => {
   const [plants, setPlants] = useState([]);
@@ -37,47 +57,106 @@ const AllPlants = () => {
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold mb-6 text-center">All Plants</h2>
+      <h2 className="text-4xl font-extrabold mb-8 text-center text-[var(--primary)] tracking-wide drop-shadow-md">
+        All Plants
+      </h2>
 
       {/* Sorting Controls */}
-      <div className="flex flex-wrap gap-3 justify-center mb-8">
-        <button
-          className="btn"
-          onClick={() => handleSortChange("Watering_Frequency")}
-        >
-          Sort by Watering Frequency{" "}
-          {sortField === "Watering_Frequency" ? `(${sortOrder})` : ""}
-        </button>
-        <button className="btn" onClick={() => handleSortChange("Health")}>
-          Sort by Health {sortField === "Health" ? `(${sortOrder})` : ""}
-        </button>
+      <div className="flex flex-wrap gap-4 justify-center mb-8">
+        {[
+          { label: "Name", field: "Plant_Name" },
+          { label: "Category", field: "Category" },
+          { label: "Watering Frequency", field: "Watering_Frequency" },
+        ].map(({ label, field }) => (
+          <button
+            key={field}
+            onClick={() => handleSortChange(field)}
+            className={`btn px-5 py-2 rounded-full font-semibold transition 
+              ${
+                sortField === field
+                  ? "bg-[var(--accent)] text-white shadow-lg"
+                  : "bg-gray-100 text-gray-800 hover:bg-[var(--accent)] hover:text-white"
+              }`}
+          >
+            Sort by {label}{" "}
+            {sortField === field ? (sortOrder === "asc" ? "↑" : "↓") : ""}
+          </button>
+        ))}
       </div>
 
-      {/* Grid of Plant Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedPlants.map((plant) => (
-          <div key={plant._id} className="card">
-            <img
-              src={plant.Image}
-              alt={plant["Plant_Name"]}
-              className="w-full h-48 object-cover rounded-lg mb-4"
-            />
-            <h3 className="text-xl font-semibold mb-2">{plant.Plant_Name}</h3>
-
-            <p className="text-sm mb-1">🌱 Category: {plant.Category}</p>
-            <p className="text-sm mb-1">
-              💧 Watering Frequency: {plant.Watering_Frequency} days
-            </p>
-            <p className="text-sm mb-1">❤️ Health: {plant.Health}%</p>
-            <p className="text-sm mb-2">🧪 Care Level: {plant.Care_Level}</p>
-            <Link
-              to={`/plants/${plant._id}`}
-              className="btn mt-2 w-full text-center"
-            >
-              View Details
-            </Link>
-          </div>
-        ))}
+      <div className="overflow-x-auto rounded-lg shadow-lg border border-gray-300">
+        <table className="min-w-full bg-white dark:bg-[var(--base-100)] rounded-lg">
+          <thead className="bg-[var(--primary)] text-white rounded-lg">
+            <tr>
+              <th className="px-6 py-4 text-left font-semibold">Plant</th>
+              <th className="px-6 py-4 text-left font-semibold">Category</th>
+              <th className="px-6 py-4 text-left font-semibold">
+                Watering Frequency
+              </th>
+              <th className="px-6 py-4 text-center font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedPlants.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={4}
+                  className="text-center py-6 text-gray-500 font-medium"
+                >
+                  No plants found.
+                </td>
+              </tr>
+            ) : (
+              sortedPlants.map((plant) => (
+                <tr
+                  key={plant._id}
+                  className="border-b border-gray-200 hover:bg-[var(--accent-light)] transition-colors"
+                >
+                  <td className="flex items-center gap-4 px-6 py-4">
+                    <img
+                      src={plant.Image || "/Images/placeholder-plant.png"}
+                      alt={plant.Plant_Name}
+                      className="w-12 h-12 rounded-lg object-cover shadow-md"
+                    />
+                    <span className="font-semibold text-lg text-[var(--primary)]">
+                      {plant.Plant_Name}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
+                        categoryColors[plant.Category?.toLowerCase()] ||
+                        "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      {plant.Category}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${wateringFrequencyColors(
+                        plant.Watering_Frequency
+                      )}`}
+                    >
+                      Every {plant.Watering_Frequency} day
+                      {plant.Watering_Frequency > 1 ? "s" : ""}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <Link
+                      to={`/plants/${plant._id}`}
+                      className="inline-flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-dark)] text-white px-4 py-2 rounded-lg shadow-md transition"
+                      aria-label={`View details of ${plant.Plant_Name}`}
+                    >
+                      <Eye size={18} />
+                      View Details
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
     </section>
   );
