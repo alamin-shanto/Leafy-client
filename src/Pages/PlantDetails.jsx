@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import PlantNotFound from "./PlantNotFound";
 import { Droplet, Calendar, Heart, User, Mail } from "lucide-react";
+import { format, formatDistanceToNow } from "date-fns";
 
 const categoryColors = {
   "flowering plants": "bg-pink-200 text-pink-800",
@@ -114,13 +115,33 @@ const PlantDetails = () => {
                 <InfoItem
                   icon={<Calendar size={20} />}
                   label="Last Watered"
-                  value={plant.Last_Watering_Date?.slice(0, 10) || "N/A"}
+                  value={
+                    plant.Last_Watering_Date
+                      ? `${format(
+                          new Date(plant.Last_Watering_Date),
+                          "PPP"
+                        )} (${formatDistanceToNow(
+                          new Date(plant.Last_Watering_Date)
+                        )} ago)`
+                      : "N/A"
+                  }
                 />
                 <InfoItem
                   icon={<Calendar size={20} />}
                   label="Next Watering"
-                  value={plant.Next_Watering_Date?.slice(0, 10) || "N/A"}
+                  value={
+                    plant.Next_Watering_Date
+                      ? `${format(
+                          new Date(plant.Next_Watering_Date),
+                          "PPP"
+                        )} (${formatDistanceToNow(
+                          new Date(plant.Next_Watering_Date),
+                          { addSuffix: true }
+                        )})`
+                      : "N/A"
+                  }
                 />
+
                 <InfoItem
                   icon={<Heart size={20} />}
                   label="Health"

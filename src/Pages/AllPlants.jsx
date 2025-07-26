@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Eye } from "lucide-react"; // For an eye icon on View Details button
+import { Eye } from "lucide-react";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 const categoryColors = {
   "flowering plants": "bg-pink-200 text-pink-800",
@@ -19,6 +21,20 @@ const wateringFrequencyColors = (days) => {
   if (days <= 3) return "bg-red-200 text-red-800";
   if (days <= 7) return "bg-yellow-200 text-yellow-800";
   return "bg-green-200 text-green-800";
+};
+
+const categoryDescriptions = {
+  "flowering plants": "These plants produce flowers and need moderate care.",
+  ferns: "Ferns prefer shady and moist environments.",
+  succulents:
+    "Succulents store water in their leaves and need less frequent watering.",
+  trees: "Trees provide shade and oxygen, requiring long-term care.",
+  shrubs: "Shrubs are bushy plants that can be decorative or functional.",
+  herbs: "Herbs are aromatic plants used in cooking and medicine.",
+  "aquatic plants": "Aquatic plants grow in or near water bodies.",
+  vines: "Vines climb and spread, great for vertical gardens.",
+  "indoor foliage": "Indoor foliage plants improve air quality inside homes.",
+  "carnivorous plants": "Carnivorous plants trap insects for nutrients.",
 };
 
 const AllPlants = () => {
@@ -89,8 +105,18 @@ const AllPlants = () => {
           <thead className="bg-[var(--primary)] text-white rounded-lg">
             <tr>
               <th className="px-6 py-4 text-left font-semibold">Plant</th>
-              <th className="px-6 py-4 text-left font-semibold">Category</th>
-              <th className="px-6 py-4 text-left font-semibold">
+              <th
+                className="px-6 py-4 text-left font-semibold"
+                data-tooltip-id="category-tooltip"
+                data-tooltip-content="Plant category description"
+              >
+                Category
+              </th>
+              <th
+                className="px-6 py-4 text-left font-semibold"
+                data-tooltip-id="watering-tooltip"
+                data-tooltip-content="How often to water this plant (in days)"
+              >
                 Watering Frequency
               </th>
               <th className="px-6 py-4 text-center font-semibold">Actions</th>
@@ -128,29 +154,44 @@ const AllPlants = () => {
                         categoryColors[plant.Category?.toLowerCase()] ||
                         "bg-gray-200 text-gray-700"
                       }`}
+                      data-tooltip-id="category-desc-tooltip"
+                      data-tooltip-content={
+                        categoryDescriptions[plant.Category?.toLowerCase()] ||
+                        "No description available"
+                      }
                     >
                       {plant.Category}
                     </span>
+                    {/* Tooltip for category badge */}
+                    <ReactTooltip id="category-desc-tooltip" />
                   </td>
                   <td className="px-6 py-4">
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${wateringFrequencyColors(
                         plant.Watering_Frequency
                       )}`}
+                      data-tooltip-id="watering-frequency-tooltip"
+                      data-tooltip-content={`Water every ${
+                        plant.Watering_Frequency
+                      } day${plant.Watering_Frequency > 1 ? "s" : ""}`}
                     >
                       Every {plant.Watering_Frequency} day
                       {plant.Watering_Frequency > 1 ? "s" : ""}
                     </span>
+                    <ReactTooltip id="watering-frequency-tooltip" />
                   </td>
                   <td className="px-6 py-4 text-center">
                     <Link
                       to={`/plants/${plant._id}`}
                       className="inline-flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-dark)] text-white px-4 py-2 rounded-lg shadow-md transition"
                       aria-label={`View details of ${plant.Plant_Name}`}
+                      data-tooltip-id="view-details-tooltip"
+                      data-tooltip-content="Click to see full details of this plant"
                     >
                       <Eye size={18} />
                       View Details
                     </Link>
+                    <ReactTooltip id="view-details-tooltip" />
                   </td>
                 </tr>
               ))
@@ -158,6 +199,10 @@ const AllPlants = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Tooltip components for table headers */}
+      <ReactTooltip id="category-tooltip" />
+      <ReactTooltip id="watering-tooltip" />
     </section>
   );
 };
