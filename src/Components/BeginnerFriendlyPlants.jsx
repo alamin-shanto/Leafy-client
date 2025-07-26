@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+import SubSpinner from "./SubSpinner";
+
 const BeginnerFriendlyPlants = () => {
   const [easyPlants, setEasyPlants] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +23,7 @@ const BeginnerFriendlyPlants = () => {
       });
   }, []);
 
-  if (loading) return <p className="text-center">Loading beginner plants...</p>;
+  if (loading) return <SubSpinner />;
   if (!easyPlants.length)
     return (
       <p className="text-center text-gray-500">No beginner plants found.</p>

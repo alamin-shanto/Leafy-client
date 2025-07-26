@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext, useCallback } from "react";
 import { Link } from "react-router-dom";
 import AuthContext from "../Context/AuthContext";
 import Swal from "sweetalert2";
+import SubSpinner from "../Components/SubSpinner";
 
 const normalizeDate = (date) => {
   if (!date) return "";
@@ -74,7 +75,7 @@ const MyPlants = () => {
   const handleDelete = (id) => {
     if (!window.confirm("Are you sure you want to delete this plant?")) return;
 
-    fetch(`https://leafy-server-seven.vercel.app/plants/${id}`, {
+    fetch(`https://leafy-server-seven.vercel.app/${id}`, {
       method: "DELETE",
     })
       .then((res) => {
@@ -128,7 +129,7 @@ const MyPlants = () => {
       Image: editFormData.Image,
     };
 
-    fetch(`https://leafy-server-seven.vercel.app/plants/${editingPlantId}`, {
+    fetch(`https://leafy-server-seven.vercel.app/${editingPlantId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updateData),
@@ -149,8 +150,7 @@ const MyPlants = () => {
       .catch((err) => Swal.fire("Error", err.message, "error"));
   };
 
-  if (loading)
-    return <p className="text-center mt-10">Loading your plants...</p>;
+  if (loading) return <SubSpinner />;
 
   if (!myPlants.length)
     return (

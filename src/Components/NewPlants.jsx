@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import SubSpinner from "./SubSpinner";
 
 const NewPlants = () => {
   const [plants, setPlants] = useState([]);
@@ -21,13 +22,7 @@ const NewPlants = () => {
       });
   }, []);
 
-  if (loading) {
-    return (
-      <p className="text-center my-10 text-lg font-semibold">
-        Loading plants...
-      </p>
-    );
-  }
+  if (loading) return <SubSpinner />;
 
   if (error) {
     return <p className="text-center my-10 text-red-500">{error}</p>;

@@ -26,7 +26,17 @@ const PlantDetails = () => {
   }, [id]);
 
   if (loading) {
-    return <p className="text-center mt-10">Loading plant details...</p>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-green-50 text-green-700 p-6">
+        <div className="relative w-24 h-24 mb-6">
+          <div className="absolute top-0 left-0 w-full h-full border-8 border-t-green-600 border-b-green-400 border-l-transparent border-r-transparent rounded-full animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center text-green-700 text-4xl">
+            🌿
+          </div>
+        </div>
+        <p className="text-xl font-semibold">Loading plant details...</p>
+      </div>
+    );
   }
 
   if (error === "Plant not found") {
