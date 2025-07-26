@@ -21,7 +21,7 @@ const AddPlants = () => {
       Email: formData.get("Email"),
     };
 
-    fetch("http://localhost:3000/plants", {
+    fetch("https://leafy-server-seven.vercel.app/plants", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newPlant),

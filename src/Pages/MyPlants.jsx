@@ -21,7 +21,7 @@ const MyPlants = () => {
   const fetchPlants = useCallback(() => {
     if (!user?.email) return;
     setLoading(true);
-    fetch(`http://localhost:3000/plants?t=${Date.now()}`)
+    fetch(`https://leafy-server-seven.vercel.app/plants?t=${Date.now()}`)
       .then((res) => res.json())
       .then((data) => {
         const filtered = data.filter((plant) => plant.Email === user.email);
@@ -51,7 +51,7 @@ const MyPlants = () => {
               Next_Watering_Date: normalizeDate(nextWatering),
             };
 
-            fetch(`http://localhost:3000/plants/${plant._id}`, {
+            fetch(`https://leafy-server-seven.vercel.app/plants/${plant._id}`, {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(updatedPlant),
@@ -74,7 +74,9 @@ const MyPlants = () => {
   const handleDelete = (id) => {
     if (!window.confirm("Are you sure you want to delete this plant?")) return;
 
-    fetch(`http://localhost:3000/plants/${id}`, { method: "DELETE" })
+    fetch(`https://leafy-server-seven.vercel.app/plants/${id}`, {
+      method: "DELETE",
+    })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to delete plant");
         setMyPlants((prev) => prev.filter((plant) => plant._id !== id));
@@ -126,7 +128,7 @@ const MyPlants = () => {
       Image: editFormData.Image,
     };
 
-    fetch(`http://localhost:3000/plants/${editingPlantId}`, {
+    fetch(`https://leafy-server-seven.vercel.app/plants/${editingPlantId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updateData),

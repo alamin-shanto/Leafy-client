@@ -7,7 +7,7 @@ const NewPlants = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3000/plants")
+    fetch("https://leafy-server-seven.vercel.app/plants")
       .then((res) => res.json())
       .then((data) => {
         const latestSix = data.reverse().slice(0, 6);

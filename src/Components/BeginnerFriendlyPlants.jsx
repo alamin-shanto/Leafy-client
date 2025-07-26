@@ -6,7 +6,7 @@ const BeginnerFriendlyPlants = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/plants")
+    fetch("https://leafy-server-seven.vercel.app/plants")
       .then((res) => res.json())
       .then((data) => {
         const veryEasy = data.filter(

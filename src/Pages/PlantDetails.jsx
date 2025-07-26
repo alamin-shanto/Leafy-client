@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import PlantNotFound from "./PlantNotFound";
 
 const PlantDetails = () => {
   const { id } = useParams();
@@ -8,7 +9,7 @@ const PlantDetails = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch(`http://localhost:3000/plants/${id}`)
+    fetch(`https://leafy-server-seven.vercel.app/plants/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch plant");
         return res.json();
@@ -28,8 +29,8 @@ const PlantDetails = () => {
     return <p className="text-center mt-10">Loading plant details...</p>;
   }
 
-  if (error) {
-    return <p className="text-center text-red-500 mt-10">{error}</p>;
+  if (error === "Plant not found") {
+    return <PlantNotFound />;
   }
 
   if (!plant) return null;
