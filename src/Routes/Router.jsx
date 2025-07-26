@@ -12,6 +12,7 @@ import Layout from "../Components/Layout";
 import PrivateRoutes from "./PrivateRoutes";
 import PlantDetails from "../Pages/PlantDetails";
 import Spinner from "../Components/Spinner";
+import UpdatePlant from "./../Pages/UpdatePlant";
 
 // A wrapper component that tracks location changes and shows spinner on route change
 const RouterWithLoading = () => {
@@ -61,6 +62,15 @@ const RouterWithLoading = () => {
           element={
             <PrivateRoutes>
               <AddPlants />
+            </PrivateRoutes>
+          }
+        />
+
+        <Route
+          path="/plants/update/:id"
+          element={
+            <PrivateRoutes>
+              <UpdatePlant />
             </PrivateRoutes>
           }
         />

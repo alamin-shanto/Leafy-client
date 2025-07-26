@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../Context/AuthContext";
 import Swal from "sweetalert2";
 import SubSpinner from "../Components/SubSpinner";
@@ -16,8 +16,7 @@ const MyPlants = () => {
   const { user } = useContext(AuthContext);
   const [myPlants, setMyPlants] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editingPlantId, setEditingPlantId] = useState(null);
-  const [editFormData, setEditFormData] = useState({});
+  const navigate = useNavigate();
 
   const fetchPlants = useCallback(() => {
     if (!user?.email) return;
@@ -73,81 +72,29 @@ const MyPlants = () => {
   }, [fetchPlants]);
 
   const handleDelete = (id) => {
-    if (!window.confirm("Are you sure you want to delete this plant?")) return;
-
-    fetch(`https://leafy-server-seven.vercel.app/${id}`, {
-      method: "DELETE",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to delete plant");
-        setMyPlants((prev) => prev.filter((plant) => plant._id !== id));
-      })
-      .catch((err) => alert(err.message));
-  };
-
-  const handleEditClick = (plant) => {
-    setEditingPlantId(plant._id);
-    setEditFormData({
-      Plant_Name: plant.Plant_Name || "",
-      Description: plant.Description || "",
-      Category: plant.Category || "",
-      Care_Level: plant.Care_Level || "",
-      Watering_Frequency: plant.Watering_Frequency || 0,
-      Health: plant.Health || 0,
-      Last_Watering_Date: normalizeDate(plant.Last_Watering_Date),
-      Next_Watering_Date: normalizeDate(plant.Next_Watering_Date),
-      UserName: plant.UserName || "",
-      Email: plant.Email || "",
-      Image: plant.Image || "",
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This will permanently delete your plant.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`https://leafy-server-seven.vercel.app/plants/${id}`, {
+          method: "DELETE",
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("Failed to delete plant");
+            setMyPlants((prev) => prev.filter((plant) => plant._id !== id));
+            Swal.fire("Deleted!", "Your plant has been deleted.", "success");
+          })
+          .catch((err) =>
+            Swal.fire("Error", err.message || "Delete failed", "error")
+          );
+      }
     });
-  };
-
-  const handleCancelEdit = () => {
-    setEditingPlantId(null);
-    setEditFormData({});
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEditFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleUpdate = (e) => {
-    e.preventDefault();
-
-    const updateData = {
-      Plant_Name: editFormData.Plant_Name,
-      Description: editFormData.Description,
-      Category: editFormData.Category,
-      Care_Level: editFormData.Care_Level,
-      Watering_Frequency: Number(editFormData.Watering_Frequency),
-      Health: Number(editFormData.Health),
-      Last_Watering_Date: editFormData.Last_Watering_Date,
-      Next_Watering_Date: editFormData.Next_Watering_Date,
-      UserName: editFormData.UserName,
-      Email: editFormData.Email,
-      Image: editFormData.Image,
-    };
-
-    fetch(`https://leafy-server-seven.vercel.app/${editingPlantId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updateData),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to update plant");
-        return res.json();
-      })
-      .then(() => {
-        Swal.fire("Updated!", "Plant info updated successfully", "success");
-        setEditingPlantId(null);
-        setMyPlants((prev) =>
-          prev.map((plant) =>
-            plant._id === editingPlantId ? { ...plant, ...updateData } : plant
-          )
-        );
-      })
-      .catch((err) => Swal.fire("Error", err.message, "error"));
   };
 
   if (loading) return <SubSpinner />;
@@ -165,30 +112,20 @@ const MyPlants = () => {
         My Plants
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {myPlants.map((plant) =>
-          editingPlantId === plant._id ? (
-            <EditPlantForm
-              key={plant._id + "-edit"}
-              formData={editFormData}
-              onChange={handleChange}
-              onCancel={handleCancelEdit}
-              onSubmit={handleUpdate}
-            />
-          ) : (
-            <PlantCard
-              key={plant._id}
-              plant={plant}
-              onEdit={() => handleEditClick(plant)}
-              onDelete={() => handleDelete(plant._id)}
-            />
-          )
-        )}
+        {myPlants.map((plant) => (
+          <PlantCard
+            key={plant._id}
+            plant={plant}
+            onDelete={() => handleDelete(plant._id)}
+            onUpdate={() => navigate(`/plants/update/${plant._id}`)}
+          />
+        ))}
       </div>
     </div>
   );
 };
 
-const PlantCard = ({ plant, onEdit, onDelete }) => (
+const PlantCard = ({ plant, onUpdate, onDelete }) => (
   <div className="card p-6 rounded-xl shadow-md bg-[var(--card-bg)] border border-[var(--border-color)] hover:shadow-lg transition relative flex flex-col">
     {plant.Image ? (
       <img
@@ -234,10 +171,10 @@ const PlantCard = ({ plant, onEdit, onDelete }) => (
     </ul>
     <div className="flex gap-3 mt-auto">
       <button
-        onClick={onEdit}
+        onClick={onUpdate}
         className="btn bg-[var(--info)] hover:bg-[var(--accent)] text-white flex-grow"
       >
-        Edit
+        Update
       </button>
       <button
         onClick={onDelete}
@@ -247,63 +184,6 @@ const PlantCard = ({ plant, onEdit, onDelete }) => (
       </button>
     </div>
   </div>
-);
-
-const EditPlantForm = ({ formData, onChange, onCancel, onSubmit }) => (
-  <form
-    onSubmit={onSubmit}
-    className="card p-6 rounded-xl shadow-md bg-[var(--card-bg)] border border-[var(--border-color)] transition space-y-4"
-  >
-    {[
-      { name: "Plant_Name", placeholder: "Plant Name", type: "text" },
-      { name: "Description", placeholder: "Description", type: "text" },
-      { name: "Category", placeholder: "Category", type: "text" },
-      { name: "Care_Level", placeholder: "Care Level", type: "text" },
-      {
-        name: "Watering_Frequency",
-        placeholder: "Watering Frequency",
-        type: "number",
-      },
-      { name: "Health", placeholder: "Health", type: "number" },
-      { name: "Last_Watering_Date", type: "date" },
-      { name: "Next_Watering_Date", type: "date" },
-      { name: "UserName", placeholder: "User Name", type: "text" },
-      {
-        name: "Email",
-        placeholder: "User Email",
-        type: "email",
-        disabled: true,
-      },
-      { name: "Image", placeholder: "Image URL", type: "url" },
-    ].map((field) => (
-      <input
-        key={field.name}
-        type={field.type}
-        name={field.name}
-        value={formData[field.name] || ""}
-        onChange={onChange}
-        required={!field.disabled}
-        placeholder={field.placeholder}
-        className="input-field"
-        disabled={field.disabled}
-      />
-    ))}
-    <div className="flex justify-between gap-4">
-      <button
-        type="submit"
-        className="btn bg-[var(--success)] hover:bg-green-600 text-white flex-grow"
-      >
-        Save
-      </button>
-      <button
-        type="button"
-        onClick={onCancel}
-        className="btn bg-gray-400 hover:bg-gray-500 text-white flex-grow"
-      >
-        Cancel
-      </button>
-    </div>
-  </form>
 );
 
 export default MyPlants;
