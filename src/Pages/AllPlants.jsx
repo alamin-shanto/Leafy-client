@@ -100,8 +100,9 @@ const AllPlants = () => {
         ))}
       </div>
 
-      <div className="overflow-x-auto rounded-lg shadow-lg border border-gray-300">
-        <table className="min-w-full bg-white dark:bg-[var(--base-100)] rounded-lg">
+      {/* Responsive Table Wrapper */}
+      <div className="overflow-x-auto w-full rounded-lg shadow-lg border border-gray-300">
+        <table className="min-w-[600px] sm:min-w-full w-full table-auto bg-white dark:bg-[var(--base-100)] rounded-lg">
           <thead className="bg-[var(--primary)] text-white rounded-lg">
             <tr>
               <th className="px-6 py-4 text-left font-semibold">Plant</th>
@@ -138,19 +139,30 @@ const AllPlants = () => {
                   key={plant._id}
                   className="border-b border-gray-200 hover:bg-[var(--accent-light)] transition-colors"
                 >
-                  <td className="flex items-center gap-4 px-6 py-4">
-                    <img
-                      src={plant.Image || "/Images/placeholder-plant.png"}
-                      alt={plant.Plant_Name}
-                      className="w-12 h-12 rounded-lg object-cover shadow-md"
-                    />
-                    <span className="font-semibold text-lg text-[var(--primary)]">
-                      {plant.Plant_Name}
-                    </span>
+                  {/* Plant Name cell */}
+                  <td className="px-4 py-2 max-w-full sm:max-w-none">
+                    <div className="flex items-center gap-4 sm:gap-6 min-w-[200px]">
+                      <img
+                        src={plant.Image || "/Images/placeholder-plant.png"}
+                        alt={plant.Plant_Name}
+                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover shadow-md flex-shrink-0"
+                      />
+                      <span
+                        className="font-semibold text-lg sm:text-xl text-[var(--primary)] truncate"
+                        title={plant.Plant_Name}
+                      >
+                        {plant.Plant_Name}
+                      </span>
+                    </div>
                   </td>
-                  <td className="px-6 py-4">
+
+                  {/* Category cell */}
+                  <td
+                    className="px-4 py-2 max-w-[120px] sm:max-w-none truncate"
+                    title={plant.Category}
+                  >
                     <span
-                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
+                      className={`inline-block px-3 py-1 rounded-full text-sm sm:text-base font-semibold ${
                         categoryColors[plant.Category?.toLowerCase()] ||
                         "bg-gray-200 text-gray-700"
                       }`}
@@ -162,12 +174,16 @@ const AllPlants = () => {
                     >
                       {plant.Category}
                     </span>
-                    {/* Tooltip for category badge */}
                     <ReactTooltip id="category-desc-tooltip" />
                   </td>
-                  <td className="px-6 py-4">
+
+                  {/* Watering Frequency cell */}
+                  <td
+                    className="px-4 py-2 max-w-[120px] sm:max-w-none truncate"
+                    title={`Water every ${plant.Watering_Frequency} day(s)`}
+                  >
                     <span
-                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${wateringFrequencyColors(
+                      className={`inline-block px-3 py-1 rounded-full text-sm sm:text-base font-semibold ${wateringFrequencyColors(
                         plant.Watering_Frequency
                       )}`}
                       data-tooltip-id="watering-frequency-tooltip"
@@ -180,10 +196,12 @@ const AllPlants = () => {
                     </span>
                     <ReactTooltip id="watering-frequency-tooltip" />
                   </td>
-                  <td className="px-6 py-4 text-center">
+
+                  {/* Actions cell */}
+                  <td className="px-6 py-4 text-center min-w-[120px]">
                     <Link
                       to={`/plants/${plant._id}`}
-                      className="inline-flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-dark)] text-white px-4 py-2 rounded-lg shadow-md transition"
+                      className="inline-flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-dark)] text-white px-4 py-2 rounded-lg shadow-md transition text-sm sm:text-base"
                       aria-label={`View details of ${plant.Plant_Name}`}
                       data-tooltip-id="view-details-tooltip"
                       data-tooltip-content="Click to see full details of this plant"
