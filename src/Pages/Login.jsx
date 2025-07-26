@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
@@ -14,7 +14,10 @@ const LogIn = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const showAlert = (type, message) => {
     Swal.fire({
@@ -34,7 +37,7 @@ const LogIn = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       showAlert("success", "Logged in Successfully");
-      navigate("/");
+      navigate(from, { replace: true });
     } catch (err) {
       showAlert("error", "Invalid email or password");
       setError("Invalid email or password");
@@ -48,7 +51,7 @@ const LogIn = () => {
     try {
       await signInWithPopup(auth, provider);
       showAlert("success", "Logged in Successfully");
-      navigate("/");
+      navigate(from, { replace: true });
     } catch (err) {
       showAlert("error", "Google Sign-In Failed");
       setError("Google Sign-In Failed");
