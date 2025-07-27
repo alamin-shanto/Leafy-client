@@ -77,7 +77,7 @@ const AllPlants = () => {
         All Plants
       </h2>
 
-      {/* Sorting Controls */}
+      {/* Sorting Buttons */}
       <div className="flex flex-wrap gap-4 justify-center mb-8">
         {[
           { label: "Name", field: "Plant_Name" },
@@ -87,12 +87,11 @@ const AllPlants = () => {
           <button
             key={field}
             onClick={() => handleSortChange(field)}
-            className={`btn px-5 py-2 rounded-full font-semibold transition 
-              ${
-                sortField === field
-                  ? "bg-[var(--accent)] text-white shadow-lg"
-                  : "bg-gray-100 text-gray-800 hover:bg-[var(--accent)] hover:text-white"
-              }`}
+            className={`btn px-5 py-2 rounded-full font-semibold transition ${
+              sortField === field
+                ? "bg-[var(--accent)] text-white shadow-lg"
+                : "bg-gray-100 text-gray-800 hover:bg-[var(--accent)] hover:text-white"
+            }`}
           >
             Sort by {label}{" "}
             {sortField === field ? (sortOrder === "asc" ? "↑" : "↓") : ""}
@@ -100,10 +99,10 @@ const AllPlants = () => {
         ))}
       </div>
 
-      {/* Responsive Table Wrapper */}
-      <div className="overflow-x-auto w-full rounded-lg shadow-lg border border-gray-300">
-        <table className="min-w-[600px] sm:min-w-full w-full table-auto bg-white dark:bg-[var(--base-100)] rounded-lg">
-          <thead className="bg-[var(--primary)] text-white rounded-lg">
+      {/* --- Table View for md+ --- */}
+      <div className="hidden md:block overflow-x-auto w-full rounded-lg shadow-lg border border-gray-300">
+        <table className="min-w-full bg-white dark:bg-[var(--base-100)] rounded-lg">
+          <thead className="bg-[var(--primary)] text-white">
             <tr>
               <th className="px-6 py-4 text-left font-semibold">Plant</th>
               <th
@@ -137,32 +136,21 @@ const AllPlants = () => {
               sortedPlants.map((plant) => (
                 <tr
                   key={plant._id}
-                  className="border-b border-gray-200 hover:bg-[var(--accent-light)] transition-colors"
+                  className="border-b hover:bg-[var(--accent-light)]"
                 >
-                  {/* Plant Name cell */}
-                  <td className="px-4 py-2 max-w-full sm:max-w-none">
-                    <div className="flex items-center gap-4 sm:gap-6 min-w-[200px]">
-                      <img
-                        src={plant.Image || "/Images/placeholder-plant.png"}
-                        alt={plant.Plant_Name}
-                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover shadow-md flex-shrink-0"
-                      />
-                      <span
-                        className="font-semibold text-lg sm:text-xl text-[var(--primary)] truncate"
-                        title={plant.Plant_Name}
-                      >
-                        {plant.Plant_Name}
-                      </span>
-                    </div>
+                  <td className="px-6 py-4 flex items-center gap-4">
+                    <img
+                      src={plant.Image || "/Images/placeholder-plant.png"}
+                      alt={plant.Plant_Name}
+                      className="w-12 h-12 rounded-lg object-cover shadow-md"
+                    />
+                    <span className="font-semibold text-lg text-[var(--primary)]">
+                      {plant.Plant_Name}
+                    </span>
                   </td>
-
-                  {/* Category cell */}
-                  <td
-                    className="px-4 py-2 max-w-[120px] sm:max-w-none truncate"
-                    title={plant.Category}
-                  >
+                  <td className="px-6 py-4">
                     <span
-                      className={`inline-block px-3 py-1 rounded-full text-sm sm:text-base font-semibold ${
+                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
                         categoryColors[plant.Category?.toLowerCase()] ||
                         "bg-gray-200 text-gray-700"
                       }`}
@@ -176,14 +164,9 @@ const AllPlants = () => {
                     </span>
                     <ReactTooltip id="category-desc-tooltip" />
                   </td>
-
-                  {/* Watering Frequency cell */}
-                  <td
-                    className="px-4 py-2 max-w-[120px] sm:max-w-none truncate"
-                    title={`Water every ${plant.Watering_Frequency} day(s)`}
-                  >
+                  <td className="px-6 py-4">
                     <span
-                      className={`inline-block px-3 py-1 rounded-full text-sm sm:text-base font-semibold ${wateringFrequencyColors(
+                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${wateringFrequencyColors(
                         plant.Watering_Frequency
                       )}`}
                       data-tooltip-id="watering-frequency-tooltip"
@@ -196,15 +179,10 @@ const AllPlants = () => {
                     </span>
                     <ReactTooltip id="watering-frequency-tooltip" />
                   </td>
-
-                  {/* Actions cell */}
-                  <td className="px-6 py-4 text-center min-w-[120px]">
+                  <td className="px-6 py-4 text-center">
                     <Link
                       to={`/plants/${plant._id}`}
-                      className="inline-flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-dark)] text-white px-4 py-2 rounded-lg shadow-md transition text-sm sm:text-base"
-                      aria-label={`View details of ${plant.Plant_Name}`}
-                      data-tooltip-id="view-details-tooltip"
-                      data-tooltip-content="Click to see full details of this plant"
+                      className="inline-flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-dark)] text-white px-4 py-2 rounded-lg shadow-md transition"
                     >
                       <Eye size={18} />
                       View Details
@@ -218,7 +196,68 @@ const AllPlants = () => {
         </table>
       </div>
 
-      {/* Tooltip components for table headers */}
+      {/* --- Card View for Mobile (below md) --- */}
+      <div className="md:hidden grid grid-cols-1 gap-6">
+        {sortedPlants.map((plant) => (
+          <div
+            key={plant._id}
+            className="relative bg-white/80 dark:bg-[var(--base-100)] backdrop-blur-md border border-gray-200 dark:border-gray-700 shadow-lg rounded-2xl p-5 transition-transform hover:scale-[1.02]"
+          >
+            {/* Image & Name */}
+            <div className="flex items-center gap-4 mb-4">
+              <img
+                src={plant.Image || "/Images/placeholder-plant.png"}
+                alt={plant.Plant_Name}
+                className="w-16 h-16 object-cover rounded-xl shadow-sm border border-green-300"
+              />
+              <h3 className="text-xl font-extrabold text-[var(--primary)] tracking-tight">
+                {plant.Plant_Name}
+              </h3>
+            </div>
+
+            {/* Category */}
+            <div className="mb-2">
+              <span className="block text-sm font-medium text-gray-500">
+                Category
+              </span>
+              <span
+                className={`inline-block mt-1 px-3 py-1 text-xs font-semibold rounded-full shadow-sm ${
+                  categoryColors[plant.Category?.toLowerCase()] ||
+                  "bg-gray-200 text-gray-700"
+                }`}
+              >
+                {plant.Category}
+              </span>
+            </div>
+
+            {/* Watering */}
+            <div className="mb-4">
+              <span className="block text-sm font-medium text-gray-500">
+                Watering
+              </span>
+              <span
+                className={`inline-block mt-1 px-3 py-1 text-xs font-semibold rounded-full ${wateringFrequencyColors(
+                  plant.Watering_Frequency
+                )}`}
+              >
+                Every {plant.Watering_Frequency} day
+                {plant.Watering_Frequency > 1 ? "s" : ""}
+              </span>
+            </div>
+
+            {/* View Button */}
+            <Link
+              to={`/plants/${plant._id}`}
+              className="inline-flex items-center justify-center gap-2 w-full mt-2 py-2 text-sm font-semibold text-white bg-[var(--accent)] hover:bg-[var(--accent-dark)] rounded-xl shadow-md transition"
+            >
+              <Eye size={18} />
+              View Details
+            </Link>
+          </div>
+        ))}
+      </div>
+
+      {/* Tooltips */}
       <ReactTooltip id="category-tooltip" />
       <ReactTooltip id="watering-tooltip" />
     </section>
