@@ -8,6 +8,11 @@ Leafy is a modern and user-friendly web application built for plant lovers to ma
 
 ---
 
+![Leafy](https://github.com/user-attachments/assets/4c7033a3-6bfd-472c-8d92-527c1538a3a5)
+
+
+---
+
 ## 🚀 Tech Stack
 
 This app is developed using modern frontend technologies and tools:
